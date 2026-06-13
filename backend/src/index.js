@@ -1,16 +1,20 @@
 import express from "express";
-import authRoutes from "./routes/auth.route.js";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
+// 1. LOAD ENV FIRST
+dotenv.config(); 
 
-const PORT = process.env.PORT || 5001;
+// 2. IMPORT ROUTES AND DB AFTER LIBRARIES
+import authRoutes from "./routes/auth.route.js";
+import { connectDB } from "./lib/db.js"; 
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
+app.use(express.json());
 app.use("/api/auth", authRoutes);
 
-app.listen(PORT, function() {
-    const actualPort = this.address().port;
-    console.log(`🚀 Blab backend is ACTUALLY running on port: ${actualPort}`);
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    connectDB(); // Now when this runs, process.env.MONGO_URI won't be undefined!
 });
